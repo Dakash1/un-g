@@ -14,10 +14,18 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
     public float groundDistance = 0.4f;
-    private int doubleJump = 1;
+    private int doubleJump = 2;
+    private Animator animator;
+
+    // Start
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
     // Update is called once per frame
     void Update()
     {
+        
         isGrounded = Physics.CheckSphere(groundChek.position, groundDistance, groundMask);
         if (isGrounded && velocity.y < 0){
             velocity.y = -2f;
@@ -32,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
 
         if(isGrounded){
-                doubleJump = 1;
+                doubleJump = 2;
         }
 
         if(Input.GetButtonDown("Jump")){
@@ -48,10 +56,13 @@ public class PlayerMovement : MonoBehaviour
             controller.height = 2f;
         }
         if (Input.GetKey("left shift")){
-            speed = 20f;
+
+            speed =20f;
         }
         else{
             speed = 10f;
         }
+        animator.SetFloat("speed", Vector3.ClampMagnitude(new Vector3(x, 0, z), 1).magnitude * speed);
+        
     }
 }
